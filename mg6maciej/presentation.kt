@@ -1,109 +1,100 @@
 package mg6maciej
 
+import android.R
 import android.os.Bundle
-import android.support.test.espresso.Espresso
-import android.support.test.espresso.matcher.ViewMatchers
+import android.support.annotation.StringRes
+import android.support.test.espresso.Espresso.onView
+import android.support.test.espresso.assertion.ViewAssertions.matches
+import android.support.test.espresso.matcher.ViewMatchers.withId
+import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.v4.app.Fragment
 import android.view.View
 import java.util.*
 
-fun <T : Fragment> T.applyArgs(init: Bundle.() -> Unit) = apply {
-    arguments = Bundle().apply(init)
-}
-
-fun View.show() {
-    visibility = View.VISIBLE
-}
+class Kotlin
 
 class CanDo<T>
 
-class Kotlin
-
 fun things(you: CanDo<in Kotlin>) = listOf(
-        ifStatement(),
-        forLoop(),
-        companions(),
-        functionalProgramming(),
-        extensions(),
-        operatorsOverloading(),
+        companionObjects(),
+        funcationalProgramming(),
+        extensionFunctions(),
+        operatorOverload(),
         infixFunc(),
         moreFunctionalProgramming(),
+        optionals(),
         multipleInheritance()
 )
 
 fun multipleInheritance() {
-    class MyClass(val r: Runnable) : List<String> by ArrayList(), Runnable by r {
+    class MyClass(val r: Runnable) : List<String> by ArrayList(), Runnable by r
+}
 
-    }
+fun optionals(arg: String? = null) {
+
 }
 
 fun moreFunctionalProgramming() {
-    MyFragment.newInstance("dsa")
+    MyFragment.newInstance("my_arg")
 }
 
 fun infixFunc() {
-    infix fun Int.matchesWithText(strRes: Int) {
-        Espresso.onView(ViewMatchers.withId(this))
-    }
-    R.id.text matchesWithText R.string.abc_action_bar_home_description
+    R.id.text1 matchesWithText R.string.cancel
 }
 
-fun operatorsOverloading() {
+infix private fun Int.matchesWithText(@StringRes cancel: Int) {
+    onView(withId(this)).check(matches(withText(cancel)))
+}
+
+fun operatorOverload() {
     // NSFW
-    operator fun Int.times(opeation: () -> Unit) {
-        (0..this).forEach { opeation() }
+    operator fun Int.times(operation: () -> Unit) {
+        (0..this).forEach { operation() }
     }
-    6 * { print("DevFest") }
+    6 * { print("DroidCon") }
     operator fun (() -> Unit).times(count: Int) {
         count * this
     }
-    { print("DevFest") } * 6
+    { print("DroidCon") } * 6
 }
 
-val Int.isOdd: Boolean
-    get() = this % 2 == 1
-
-fun extensions() {
-    fun Int.isEven(): Boolean = this % 2 == 0
-    (1..6).sumBy { if (it.isOdd) it else 0 }
-
-    fun Int.times(opeation: () -> Unit) {
-        (0..this).forEach { opeation() }
+fun extensionFunctions() {
+    fun Int.times(operation: () -> Unit) {
+        (0..this).forEach { operation() }
     }
-    6.times { print("DevFest") }
+    6.times { print("DroidCon") }
+
     val view = View(null)
+    view.visibility = View.VISIBLE
     view.show()
 }
 
-fun functionalProgramming() {
-    listOf(1, 2).filter { it % 2 == 0 }.sum()
-    (1..6).sumBy { if (it % 2 == 0) it else 0 }
+fun funcationalProgramming() {
+    (0..6).filter(::isEven).sum()
+    (0..6).sumBy { if (isEven(it)) it else 0 }
 }
 
-fun companions() {
-    MyFragment.newInstance()
-}
+private fun isEven(it: Int) = it % 2 == 0
 
 class MyFragment : Fragment() {
 
     companion object {
 
-        fun newInstance(): Fragment {
-            return MyFragment()
-        }
-
-        fun newInstance(arg: String) = MyFragment().applyArgs {
-            putString("arg", arg)
+        fun newInstance(arg: String? = null) = MyFragment().applyArgs {
+            arg?.let { putString("arg", it) }
         }
     }
 }
 
-fun forLoop() {
-    for (i in 0..6) {
+fun companionObjects() {
 
-    }
+    MyFragment.newInstance()
 }
 
-fun ifStatement() {
-    val x = if (true) 3 else 1
+// helper functions copied from real project
+
+fun <T : Fragment> T.applyArgs(init: Bundle.() -> Unit) = apply {
+    arguments = Bundle().apply(init)
 }
+
+fun View.show() { visibility = View.VISIBLE }
