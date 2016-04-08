@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <item name="text_view" type="id"/>
+    <item name="edit_text" type="id"/>
+    <item name="my_activity" type="layout"/>
+    <item name="error_view" type="id"/>
+
+</resources>
